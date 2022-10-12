@@ -1,0 +1,62 @@
+html,
+body {
+    height: 100vh;
+    margin: 0;
+    padding:0;
+    border:0;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+}
+
+header {
+    flex-grow: 0;
+    flex-basis: auto;
+}
+
+main {
+    display: block;
+    margin: 0;
+}
+
+#buscador {
+    height: 50vh;
+}
+
+footer {
+    flex-grow: 0;
+    flex-basis: 100px;
+}
+
+.form {
+    position: relative;
+}
+
+.form .fa-search {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #9ca3af;
+}
+
+.form-input {
+    height: 55px;
+    text-indent: 33px;
+    border-radius: 10px;
+}
+
+.card-img-top {
+    max-width: 700px;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+}
+
+#button {
+    background-color: #9f5acd;
+    border-color: #9f5acd;
+    color: white;
+}
