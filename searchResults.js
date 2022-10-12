@@ -61,7 +61,6 @@ ajax.onreadystatechange = function()
             }
 
             content.innerHTML = html_content;
-            cache_dinamico(data_json);
         }
 
     }
@@ -95,31 +94,6 @@ function carregaCard(categoria, servicos){
     } else
     {
         return categoria_pesquisada == categoria
-    }
-}
-
-var cache_dinamico = function(data_json){
-
-    if('caches' in window)
-    {
-        caches.delete("beautyfinder-cache").then(function(){
-            if(data_json.length > 0){
-                var files = ['dadosOffline.json'];
-                for(let i = 0; i<data_json.length; i++){
-                    for(let j = 0; j<data_json[i].servicos.length; j++){ 
-                        if(files.indexOf(data_json[i].servicos[j].imagem) == -1){
-                            files.push(data_json[i].servicos[j].imagem);
-                        }       
-                    }
-                }
-            }
-
-            caches.open("beautyfinder-cache").then(function (cache) {
-                cache.addAll(files).then(function (){
-                    console.log("Novo cache dinâmico adicionado!");
-                });
-            });
-        });
     }
 }
 

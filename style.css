@@ -55,7 +55,7 @@ footer {
     height: auto;
 }
 
-#button {
+#button, #button-bf {
     background-color: #9f5acd;
     border-color: #9f5acd;
     color: white;
