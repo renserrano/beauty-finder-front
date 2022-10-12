@@ -23,30 +23,39 @@ ajax.onreadystatechange = function()
 
             for (let i = 0; i<data_json.length; i++)
             {     
-                html_content +='<div class="row"><div class="col-12"><h2><span> </span> '+data_json[i].categoria+'</h2></div></div>';
+                const categoria = localStorage.getItem('categoria');
 
-                if (data_json[i].servicos.length == 0)
+                console.log('categoria: ', categoria)
+
+                if (categoria === '') 
                 {
+                    html_content +='<div class="row"><div class="col-12"><h2><span> </span> '+data_json[i].categoria+'</h2></div></div>';
+                    console.log('1')
+                } else if (categoria == data_json[i].categoria)
+                {
+                    html_content +='<div class="row"><div class="col-12"><h2><span> </span> '+data_json[i].categoria+'</h2></div></div>';
+                    console.log('2')
+                }
 
+                if ((data_json[i].servicos.length == 0) && ((categoria === '') || (categoria == data_json[i].categoria)))
+                {
                     html_content += '<div class="row"><div class="col-12"><div class="alert alert-warning" role="alert">Desculpe. Não temos serviços para esta categoria.</div></div></div>';
-
                 }
                 else 
-                {
-                    const searchText = localStorage.getItem('searchText');                    
+                {                    
 
-                    html_content += '<div class="row">';
-
-                    for(let j = 0; j<data_json[i].servicos.length; j++)
+                    if (carregaCard(data_json[i].categoria, data_json[i].servicos))
                     {
-                        if (data_json[i].categoria.toLowerCase().includes(searchText) || data_json[i].servicos[j].nome.toLowerCase().includes(searchText))
-                        {                           
-                            html_content += card_resultado(data_json[i].servicos[j].nome, data_json[i].servicos[j].imagem, data_json[i].servicos[j].valor, data_json[i].servicos[j].endereco);
-                        }
-    
-                    }
 
-                    html_content += '</div>';                    
+                        html_content += '<div class="row">';
+
+                        for(let j = 0; j<data_json[i].servicos.length; j++)
+                        {
+                            html_content += card_resultado(data_json[i].servicos[j].nome, data_json[i].servicos[j].imagem, data_json[i].servicos[j].valor, data_json[i].servicos[j].endereco);       
+                        }
+
+                        html_content += '</div>';                    
+                    }
                 }
 
             }
@@ -58,13 +67,44 @@ ajax.onreadystatechange = function()
     }
 }
 
+function carregaCard(categoria, servicos){
+
+    const categoria_pesquisada = localStorage.getItem('categoria');
+    const texto_pesquisado = localStorage.getItem('searchText');
+
+    if (categoria_pesquisada === '') 
+    {
+        if (texto_pesquisado === ''){
+            return true
+        }
+        else if (categoria.toLowerCase().includes(texto_pesquisado)){
+            return true
+        }
+        else 
+        {
+            for(let j = 0; j<servicos.length; j++)
+            {
+                if (servicos[j].nome.toLowerCase().includes(texto_pesquisado))
+                {                           
+                    return true                
+                }
+
+            }
+            return false;
+        }
+    } else
+    {
+        return categoria_pesquisada == categoria
+    }
+}
+
 var cache_dinamico = function(data_json){
 
     if('caches' in window)
     {
-        caches.delete("brinquedo-app-dinamico").then(function(){
+        caches.delete("beautyfinder-cache").then(function(){
             if(data_json.length > 0){
-                var files = ['dados.json'];
+                var files = ['dadosOffline.json'];
                 for(let i = 0; i<data_json.length; i++){
                     for(let j = 0; j<data_json[i].servicos.length; j++){ 
                         if(files.indexOf(data_json[i].servicos[j].imagem) == -1){
@@ -74,7 +114,7 @@ var cache_dinamico = function(data_json){
                 }
             }
 
-            caches.open("brinquedo-app-dinamico").then(function (cache) {
+            caches.open("beautyfinder-cache").then(function (cache) {
                 cache.addAll(files).then(function (){
                     console.log("Novo cache dinâmico adicionado!");
                 });
@@ -92,6 +132,9 @@ var card_resultado = function(nome, imagem, valor, endereco)
                         '<h5 class="card-title">'+nome+'</h5>'+
                         '<h6 card-subtitle mb-2 text-muted>'+endereco+'</h6>'+
                         '<p class="card-text"><strong>Valor Médio:</strong> '+valor+'</p>'+
+                        '<div class="d-grid gap-2">'+
+                            '<a href="#" target="_blank" class="btn btn-info" id="button">Contratar</a>'+
+                        '</div>'+                        
                     '</div>'+
                 '</div>'+
             '</div>';
